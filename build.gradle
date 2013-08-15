@@ -1,0 +1,16 @@
+
+dependencies {
+    compile 'org.mongojack:mongojack:2.0.0-RC5'
+    compile 'commons-configuration:commons-configuration:1.7'
+    compile 'org.glassfish.jersey.core:jersey-common:2.1'
+    compile 'org.glassfish.jersey.core:jersey-client:2.1'
+    compile 'org.glassfish.jersey.core:jersey-server:2.1'
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.1'
+    testCompile 'org.glassfish.jersey.connectors:jersey-grizzly-connector:2.1'
+    testCompile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.1'
+    testCompile 'org.glassfish.grizzly:grizzly-http-server:2.3.4'
+}
+
+test {
+    workingDir 'test'
+}
