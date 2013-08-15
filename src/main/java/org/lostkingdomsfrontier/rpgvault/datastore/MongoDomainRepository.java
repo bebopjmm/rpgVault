@@ -1,5 +1,6 @@
 package org.lostkingdomsfrontier.rpgvault.datastore;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -51,18 +52,26 @@ public class MongoDomainRepository {
 
     public void setSettingDB(String dbName) {
         this.settingDB = this.mongoClient.getDB(dbName);
-        LOG.info("Now using settingDB [" + dbName + "]");
+        LOG.info("-- Now using settingDB [" + dbName + "]");
         this.settingColl =
                 JacksonDBCollection.wrap(this.settingDB.getCollection("settings"), Setting.class, String.class,
                                          JacksonViews.MongoView.class);
+        if(this.settingColl.getIndexInfo().size() < 2) {
+            this.settingColl.createIndex(new BasicDBObject("slug", 1));
+            LOG.info("-- created settingColl index for slug");
+        }
     }
 
     public void setCampaignDB(String dbName) {
         this.campaignDB = this.mongoClient.getDB(dbName);
-        LOG.info("Now using campaignDB [" + dbName + "]");
+        LOG.info("-- Now using campaignDB [" + dbName + "]");
         this.campaignColl =
                 JacksonDBCollection.wrap(this.campaignDB.getCollection("campaigns"), Campaign.class, String.class,
                                          JacksonViews.MongoView.class);
+        if(this.campaignColl.getIndexInfo().size() < 2) {
+            this.campaignColl.createIndex(new BasicDBObject("slug", 1));
+            LOG.info("-- created campaignColl index for slug");
+        }
     }
 
     public void close() {

@@ -1,5 +1,6 @@
 package org.lostkingdomsfrontier.rpgvault.datastore;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import org.lostkingdomsfrontier.rpgvault.entities.JacksonViews;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Complex;
@@ -31,8 +32,10 @@ public class SettingRepositoryDelegate {
         this.setting = setting;
         this.regionCollection = JacksonDBCollection.wrap(this.settingCollection.getCollection("regions"),
                                                          Region.class, String.class, JacksonViews.MongoView.class);
+        this.regionCollection.createIndex(new BasicDBObject("slug", 1));
         this.complexCollection = JacksonDBCollection.wrap(this.settingCollection.getCollection("complexes"),
                                                           Complex.class, String.class, JacksonViews.MongoView.class);
+        this.complexCollection.createIndex(new BasicDBObject("slug", 1));
     }
 
     /**
