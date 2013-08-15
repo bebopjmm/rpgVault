@@ -145,28 +145,4 @@ public class MongoDomainRepository {
         LOG.info("-- Attempt to getSetting [" + slug + "] yielded results size = " + cursor.count());
         return cursor.next();
     }
-
-
-//    public Region findSettingRegion(Setting setting, String regionSlug) {
-//        JacksonDBCollection<Region, String> regionColl = regionCollectionForSetting(setting);
-//        DBCursor<Region> cursor = regionColl.find().is("slug", regionSlug);
-//        LOG.info("-- Attempt to getSetting [" + regionSlug + "] yielded results size = " + cursor.count());
-//        if (cursor.hasNext())
-//            return cursor.next();
-//        else
-//            return null;
-//    }
-
-
-    final JacksonDBCollection<Region, String> regionCollectionForSetting(Setting setting) {
-        return JacksonDBCollection.wrap(
-                this.settingColl.getDbCollection().getCollection(setting.getSlug()).getCollection("regions"),
-                Region.class, String.class, JacksonViews.MongoView.class);
-    }
-
-    final JacksonDBCollection<Complex, String> complexCollectionForRegion(
-            JacksonDBCollection<Region, String> regionColl) {
-        return JacksonDBCollection.wrap(regionColl.getDbCollection().getCollection("complexes"), Complex.class,
-                                        String.class, JacksonViews.MongoView.class);
-    }
 }

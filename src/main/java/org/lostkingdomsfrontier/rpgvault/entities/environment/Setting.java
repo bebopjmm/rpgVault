@@ -24,7 +24,7 @@ public class Setting {
     String description;
 
     @JsonView(JacksonViews.MongoView.class)
-    List<String> regionIDs = new ArrayList<String>();
+    List<String> regionIDs = new ArrayList<>();
 
     @JsonView(JacksonViews.RestfulView.class)
     IndexList regionIndex = new IndexList();

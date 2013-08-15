@@ -23,7 +23,7 @@ public class Campaign {
     String slug;  // slug also needs to be unique
 
     @JsonView(JacksonViews.MongoView.class)
-    List<DBRef<Adventure,String>> adventures = new ArrayList<DBRef<Adventure, String>>();
+    List<DBRef<Adventure,String>> adventures = new ArrayList<>();
 
     @JsonView(JacksonViews.RestfulView.class)
     IndexList adventureIndex = new IndexList();

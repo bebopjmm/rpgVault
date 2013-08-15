@@ -25,7 +25,7 @@ public class Region {
     String description;
 
     @JsonView(JacksonViews.MongoView.class)
-    List<String> complexIDs = new ArrayList<String>();
+    List<String> complexIDs = new ArrayList<>();
 
     @JsonView(JacksonViews.RestfulView.class)
     IndexList complexIndex = new IndexList();

@@ -20,7 +20,7 @@ public class Complex {
 
     private String regionID;
 
-    List<Area> areas = new ArrayList<Area>();
+    List<Area> areas = new ArrayList<>();
 
     @ObjectId
     public String get_id() {

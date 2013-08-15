@@ -9,7 +9,7 @@ import java.util.List;
  *         Date: 8/10/13
  */
 public class IndexList {
-    private List<ResourceIndex> indices = new ArrayList<ResourceIndex>();
+    private List<ResourceIndex> indices = new ArrayList<>();
 
     public List<ResourceIndex> getIndices() {
         return indices;
