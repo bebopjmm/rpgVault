@@ -10,8 +10,7 @@ import org.lostkingdomsfrontier.rpgvault.entities.environment.Region;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Setting;
 import org.lostkingdomsfrontier.rpgvault.restful.RepositoryDao;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * @author: bebopjmm Date: 8/13/13 Time: 15:33
+ * @author bebopjmm Date: 8/13/13 Time: 15:33
  */
 public class RegionResource {
     private static final Logger LOG = Logger.getLogger(CampaignResource.class.getName());
@@ -53,6 +52,20 @@ public class RegionResource {
     public Region getRegion() {
         this.region.setComplexIndex(mapComplexes());
         return this.region;
+    }
+
+    @Path("/{id}")
+    public ComplexResource getRegionComplex(@PathParam("id") String slug) {
+        ComplexResource resource = resourceContext.getResource(ComplexResource.class);
+        // Lookup the specific complex associated with this region
+        Complex complex = this.delegate.findComplex(slug);
+        if (complex != null) {
+            resource.setComplex(complex);
+            resource.setDelegate(this.delegate);
+            return resource;
+        } else {
+            throw new WebApplicationException(404);
+        }
     }
 
     IndexList mapComplexes() {

@@ -57,16 +57,33 @@ public final class MongoServiceTest {
             Complex sampleComplex = new Complex();
             sampleComplex.setName("Catacombs of Wrath");
             sampleComplex.setSlug("catacombs-of-wrath");
+            WriteResult<Complex, String> result = settingDelegate.addComplex(sampleComplex);
+            LOG.info("sampleComplex id = " + result.getSavedId());
 
             Area area = new Area();
             area.setSlug("b1.1");
             area.setName("Guard Cave");
-            area.setDescription(
-                    "The worn natural tunnel curves around and then opens into a cave. Within a hairless humanoid lurches on back-bent, dog-like legs, its hideous mouth flanked by tiny arms with three-fingered hands.");
-            area.setDetails("A sinspawn dwells in this cave, charged by Erylium to guard the approach to her realm. The sinspawn does its job admirably, standing at its post for hours at a time until it is relieved by another.");
+            area.setDescription("The worn natural tunnel curves around and then opens into a cave. Within a hairless " +
+                                        "humanoid lurches on back-bent, dog-like legs, its hideous mouth flanked by tiny" +
+                                        " arms with three-fingered hands.");
+            area.setDetails("A sinspawn dwells in this cave, charged by Erylium to guard the approach to her realm." +
+                                    " The sinspawn does its job admirably, standing at its post for hours at a time" +
+                                    " until it is relieved by another.");
+            settingDelegate.addAreaToComplex(area, sampleComplex.getSlug());
+            sampleComplex = settingDelegate.findComplex(sampleComplex.getSlug());
+
+            // Test the replaceComplex function
+            area = new Area();
+            area.setSlug("b1.2");
+            area.setName("Old Storeroom");
+            area.setDescription("The original purpose of this chamber is unclear, but large mounds of rubble lie" +
+                                        " strewn on its floor. The wall to the west has been torn down to reveal a" +
+                                        " tunnel leading to the west.");
+            area.setDetails("An investigation of the rubble reveals that most of it seems to have consisted of broken" +
+                                    " urns and other pottery containers that once held food stores, long since" +
+                                    " crumbled to dust.");
             sampleComplex.getAreas().add(area);
-            WriteResult<Complex, String> result = settingDelegate.addComplex(sampleComplex);
-            LOG.info("sampleComplex id = " + result.getSavedId());
+            settingDelegate.replaceComplex(sampleComplex);
         }
 
         repository.setCampaignDB("rpg_campaigns");

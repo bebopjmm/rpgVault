@@ -1,6 +1,5 @@
 package org.lostkingdomsfrontier.rpgvault.entities.environment;
 
-import org.mongojack.DBRef;
 import org.mongojack.ObjectId;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class Complex {
 
     String slug;
 
-    private String regionID;
+    private String regionSlug;
 
     List<Area> areas = new ArrayList<>();
 
@@ -48,12 +47,12 @@ public class Complex {
         this.slug = slug;
     }
 
-    public String getRegionID() {
-        return regionID;
+    public String getRegionSlug() {
+        return regionSlug;
     }
 
-    public void setRegionID(String regionID) {
-        this.regionID = regionID;
+    public void setRegionSlug(String regionSlug) {
+        this.regionSlug = regionSlug;
     }
 
     public List<Area> getAreas() {
