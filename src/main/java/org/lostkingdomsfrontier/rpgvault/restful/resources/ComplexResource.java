@@ -52,7 +52,8 @@ public class ComplexResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Complex updateComplex(Complex complex) {
-        this.complex = this.delegate.replaceComplex(complex).getSavedObject();
+        this.delegate.replaceComplex(complex);
+        this.complex = this.delegate.findComplex(this.complex.getSlug());
         return this.complex;
     }
 

@@ -31,7 +31,7 @@ public final class MongoServiceTest {
             LOG.severe("Failed to connect to repository: [" + host + ":" + port + "]");
             return;
         }
-        repository.setSettingDB("rpg_settings");
+        repository.setSettingDB("rpg_settings", true);
         Setting sampleSetting = null;
         if (repository.getSettings().size() == 0) {
             sampleSetting = new Setting();
@@ -86,7 +86,7 @@ public final class MongoServiceTest {
             settingDelegate.replaceComplex(sampleComplex);
         }
 
-        repository.setCampaignDB("rpg_campaigns");
+        repository.setCampaignDB("rpg_campaigns", true);
         JacksonDBCollection<Campaign, String> campaignColl = repository.getCampaignColl();
         Campaign sampleCampaign = null;
         if (campaignColl.getCount() == 0) {

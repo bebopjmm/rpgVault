@@ -6,11 +6,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import org.lostkingdomsfrontier.rpgvault.entities.JacksonViews;
 import org.lostkingdomsfrontier.rpgvault.entities.campaign.Campaign;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Complex;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Region;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Setting;
 import org.mongojack.DBCursor;
-import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
 
@@ -50,7 +47,8 @@ public class MongoDomainRepository {
         return true;
     }
 
-    public void setSettingDB(String dbName) {
+    public void setSettingDB(String dbName, boolean dropExisting) {
+        if (dropExisting) this.mongoClient.dropDatabase(dbName);
         this.settingDB = this.mongoClient.getDB(dbName);
         LOG.info("-- Now using settingDB [" + dbName + "]");
         this.settingColl =
@@ -62,7 +60,8 @@ public class MongoDomainRepository {
         }
     }
 
-    public void setCampaignDB(String dbName) {
+    public void setCampaignDB(String dbName, boolean dropExisting) {
+        if (dropExisting) this.mongoClient.dropDatabase(dbName);
         this.campaignDB = this.mongoClient.getDB(dbName);
         LOG.info("-- Now using campaignDB [" + dbName + "]");
         this.campaignColl =
@@ -106,7 +105,8 @@ public class MongoDomainRepository {
     public Campaign getCampaign(String slug) {
         DBCursor<Campaign> cursor = this.campaignColl.find().is("slug", slug);
         LOG.info("-- Attempt to getCampaign [" + slug + "] yielded results size = " + cursor.count());
-        return cursor.next();
+        if (cursor.hasNext()) return cursor.next();
+        else return null;
     }
 
     public List<Setting> getSettings() {
@@ -120,7 +120,7 @@ public class MongoDomainRepository {
      * @return false if setting.getSlug() is null or matches a slug value of a Setting in the repository, otherwise
      *         true
      */
-    public boolean slugIsUnique(Setting setting) {
+    public boolean isSlugAvailable(Setting setting) {
         if (setting.getSlug() == null) return false;
         DBCursor<Setting> cursor = this.settingColl.find().is("slug", setting.getSlug());
         LOG.fine("Total settings found for slug[" + setting.getSlug() + "] = " + cursor.count());
@@ -136,7 +136,7 @@ public class MongoDomainRepository {
      */
     public WriteResult<Setting, String> addSetting(Setting setting) {
         // Verify there isn't an existing setting with same slug
-        if (!slugIsUnique(setting)) {
+        if (!isSlugAvailable(setting)) {
             RepositoryException repositoryException =
                     new RepositoryException(
                             "Attempt to add Setting already in repository, slug = " + setting.getSlug());
@@ -152,6 +152,7 @@ public class MongoDomainRepository {
     public Setting getSetting(String slug) {
         DBCursor<Setting> cursor = this.settingColl.find().is("slug", slug);
         LOG.info("-- Attempt to getSetting [" + slug + "] yielded results size = " + cursor.count());
-        return cursor.next();
+        if (cursor.hasNext()) return cursor.next();
+        else return null;
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rpgVaultRestful-configuration>
+    <baseURI>http://hogwarts.home:9000/rpgVault/</baseURI>
+    <repository>
+        <host>hogwarts.home</host>
+        <port>27017</port>
+        <settingsDB>rpg_settingsTest</settingsDB>
+        <campaignsDB>rpg_campaignsTest</campaignsDB>
+    </repository>
+</rpgVaultRestful-configuration>

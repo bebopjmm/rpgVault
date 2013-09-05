@@ -64,10 +64,8 @@ public class SettingRepositoryDelegate {
     public Region findRegion(String regionSlug) {
         DBCursor<Region> cursor = this.regionCollection.find().is("slug", regionSlug);
         LOG.info("-- Attempt to findRegion [" + regionSlug + "] yielded results size = " + cursor.count());
-        if (cursor.hasNext())
-            return cursor.next();
-        else
-            return null;
+        if (cursor.hasNext()) return cursor.next();
+        else return null;
     }
 
     /**
@@ -109,10 +107,8 @@ public class SettingRepositoryDelegate {
     public Complex findComplex(String complexSlug) {
         DBCursor<Complex> cursor = this.complexCollection.find().is("slug", complexSlug);
         LOG.info("-- Attempt to findComplex [" + complexSlug + "] yielded results size = " + cursor.count());
-        if (cursor.hasNext())
-            return cursor.next();
-        else
-            return null;
+        if (cursor.hasNext()) return cursor.next();
+        else return null;
     }
 
     /**
