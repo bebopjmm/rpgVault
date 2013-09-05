@@ -92,7 +92,7 @@ public class MongoDomainRepository {
         }
         if (!settingDelegateMap.containsKey(slug)) {
             DBCollection collection = this.settingColl.getDbCollection().getCollection(slug);
-            SettingRepositoryDelegate delegate = new SettingRepositoryDelegate(collection, getSetting(slug), this.settingColl);
+            SettingRepositoryDelegate delegate = new SettingRepositoryDelegate(collection, findSetting(slug), this.settingColl);
             settingDelegateMap.put(slug, delegate);
         }
         return settingDelegateMap.get(slug);
@@ -149,9 +149,9 @@ public class MongoDomainRepository {
         return result;
     }
 
-    public Setting getSetting(String slug) {
+    public Setting findSetting(String slug) {
         DBCursor<Setting> cursor = this.settingColl.find().is("slug", slug);
-        LOG.info("-- Attempt to getSetting [" + slug + "] yielded results size = " + cursor.count());
+        LOG.info("-- Attempt to findSetting [" + slug + "] yielded results size = " + cursor.count());
         if (cursor.hasNext()) return cursor.next();
         else return null;
     }

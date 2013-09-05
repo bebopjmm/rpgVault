@@ -54,7 +54,7 @@ public class SettingIndexResource {
     public SettingResource getSetting(@PathParam("id") String slug) {
         SettingResource resource = resourceContext.getResource(SettingResource.class);
         // Load the specific setting
-        Setting setting = RepositoryDao.VAULT_REPOSITORY.getRepository().getSetting(slug);
+        Setting setting = RepositoryDao.VAULT_REPOSITORY.getRepository().findSetting(slug);
         if (setting != null) {
             resource.setSetting(setting);
             return resource;

@@ -57,12 +57,12 @@ public class MongoDomainRepositoryTests {
         assertTrue(repository.getSettings().size() == 1);
         assertFalse(repository.isSlugAvailable(sampleSetting));
 
-        sampleSetting = repository.getSetting(sampleSetting.getSlug());
+        sampleSetting = repository.findSetting(sampleSetting.getSlug());
         assertNotNull(sampleSetting);
 
         assertNotNull(repository.getDelegateForSetting(sampleSetting.getSlug()));
 
-        sampleSetting = repository.getSetting("bogus");
+        sampleSetting = repository.findSetting("bogus");
         assertNull(sampleSetting);
 
     }

@@ -47,20 +47,37 @@ public class SettingRepositoryDelegate {
      * @return false if region.getSlug() is null or region.getSlug() matches a slug value of a Region already associated
      *         with the Setting, otherwise true
      */
-    public boolean slugIsUnique(Region region) {
+    public boolean isSlugAvailable(Region region) {
         if (region.getSlug() == null) return false;
         DBCursor<Region> cursor = this.regionCollection.find().is("slug", region.getSlug());
         return cursor.count() == 0;
     }
 
+    /**
+     * This method returns a List of all the regions currently associated with this delegate's Setting.
+     *
+     * @return List of Region objects
+     */
     public List<Region> getRegions() {
         return this.regionCollection.find().toArray();
     }
 
+    /**
+     * This method return the List of all Region objects currently associated with this delegate's Setting that match
+     * the provided slugFilter values.
+     *
+     * @param slugFilter List of slug values to filter the returned results
+     * @return List of Region objects
+     */
     public List<Region> getRegions(List<String> slugFilter) {
         return this.regionCollection.find().in("slug", slugFilter).toArray();
     }
 
+    /**
+     * This method returns the Region object within the delegate's Setting with the provided slug.
+     * @param regionSlug slug value to search against
+     * @return the Region object matching the slug value or null if no match within this Setting.
+     */
     public Region findRegion(String regionSlug) {
         DBCursor<Region> cursor = this.regionCollection.find().is("slug", regionSlug);
         LOG.info("-- Attempt to findRegion [" + regionSlug + "] yielded results size = " + cursor.count());
@@ -72,12 +89,12 @@ public class SettingRepositoryDelegate {
      * This method is used to create a new Region within the repository. The provided region must have a unique value
      * for its slug attribute or a RepositoryException will be thrown.
      *
-     * @param region
-     * @return
+     * @param region Region object to add to this delegate's Setting
+     * @return  WriteResult of the insertion operation
      */
     public WriteResult<Region, String> addRegion(Region region) {
         // Verify there isn't an existing region with same slug within the setting
-        if (!slugIsUnique(region)) {
+        if (!isSlugAvailable(region)) {
             RepositoryException repositoryException =
                     new RepositoryException(
                             "Attempt to add Regions already in repository, slug = " + region.getSlug());
@@ -92,10 +109,20 @@ public class SettingRepositoryDelegate {
         return result;
     }
 
+    /**
+     * This method returns a List of all the Complex instances currently associated with this delegate's Setting.
+     * @return List of Complex objects
+     */
     public List<Complex> getComplexes() {
         return this.complexCollection.find().toArray();
     }
 
+    /**
+     * This method return the List of all Complex objects currently associated with this delegate's Setting that match
+     * the provided slugFilter values.
+     * @param slugFilter List of slug values to filter the returned results
+     * @return List of Complex objects matching the filter values
+     */
     public List<Complex> getComplexes(List<String> slugFilter) {
         return this.complexCollection.find().in("slug", slugFilter).toArray();
     }
@@ -119,7 +146,7 @@ public class SettingRepositoryDelegate {
      * @return false if complex.getSlug() is null or complex.getSlug() matches a slug value of a Complex already
      *         associated with the Setting, otherwise true
      */
-    public boolean slugIsUnique(Complex complex) {
+    public boolean isSlugAvailable(Complex complex) {
         if (complex.getSlug() == null) return false;
         DBCursor<Complex> cursor = this.complexCollection.find().is("slug", complex.getSlug());
         return cursor.count() == 0;
@@ -127,7 +154,7 @@ public class SettingRepositoryDelegate {
 
     public WriteResult<Complex, String> addComplex(Complex complex) {
         // Verify there isn't an existing complex with same slug within the setting
-        if (!slugIsUnique(complex)) {
+        if (!isSlugAvailable(complex)) {
             RepositoryException repositoryException =
                     new RepositoryException(
                             "Attempt to add Complex already in repository, slug = " + complex.getSlug());
@@ -138,6 +165,7 @@ public class SettingRepositoryDelegate {
         // Insert the Complex and add its id to setting's regionIDs
         WriteResult<Complex, String> result = this.complexCollection.insert(complex);
 
+        // TODO include the Complex slug value in its Region
 //        this.rootCollection.updateById(setting.get_id(), DBUpdate.push("regionIDs", result.getSavedId()));
         return result;
     }

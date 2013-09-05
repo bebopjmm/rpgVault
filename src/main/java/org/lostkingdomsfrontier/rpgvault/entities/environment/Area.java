@@ -71,4 +71,12 @@ public class Area {
     public void setEntrances(List<Entrance> entrances) {
         this.entrances = entrances;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Area)) return false;
+        Area areaObj = (Area)obj;
+        return ((this.slug.equals(areaObj.slug)) && (this.name.equals(areaObj.name))
+                && (this.description.equals(areaObj.description)) && (this.details.equals(areaObj.details)));
+    }
 }
