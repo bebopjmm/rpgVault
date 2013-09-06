@@ -3,7 +3,9 @@ package org.lostkingdomsfrontier.rpgvault.entities.environment;
 import org.mongojack.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -19,7 +21,9 @@ public class Complex {
 
     private String regionSlug;
 
-    List<Area> areas = new ArrayList<>();
+    Set<Area> areas = new HashSet<>();
+
+    List<Entrance> entrances = new ArrayList<>();
 
     @ObjectId
     public String get_id() {
@@ -55,11 +59,26 @@ public class Complex {
         this.regionSlug = regionSlug;
     }
 
-    public List<Area> getAreas() {
+    public Set<Area> getAreas() {
         return areas;
     }
 
-    public void setAreas(List<Area> areas) {
+    public void setAreas(Set<Area> areas) {
         this.areas = areas;
+    }
+
+    public Area getArea(String slug) {
+        for(Area area : this.areas) {
+            if (area.getSlug().equalsIgnoreCase(slug)) return area;
+        }
+        return null;
+    }
+
+    public List<Entrance> getEntrances() {
+        return entrances;
+    }
+
+    public void setEntrances(List<Entrance> entrances) {
+        this.entrances = entrances;
     }
 }

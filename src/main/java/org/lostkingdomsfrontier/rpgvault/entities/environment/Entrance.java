@@ -2,15 +2,15 @@ package org.lostkingdomsfrontier.rpgvault.entities.environment;
 
 import org.mongojack.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author John McCormick
  *         Date: 8/10/13
  */
 public class Entrance {
-    private String _id;
-
-    String locator;
 
     String name;
 
@@ -18,23 +18,7 @@ public class Entrance {
 
     String description;
 
-    @ObjectId
-    public String get_id() {
-        return _id;
-    }
-
-    @ObjectId
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
-    public String getLocator() {
-        return locator;
-    }
-
-    public void setLocator(String locator) {
-        this.locator = locator;
-    }
+    String areas[] = new String[2];
 
     public String getName() {
         return name;
@@ -58,5 +42,14 @@ public class Entrance {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String[] getAreas() {
+        return areas;
+    }
+
+    public void connectAreas(Area area1, Area area2) {
+        this.areas[0] = area1.getSlug();
+        this.areas[1] = area2.getSlug();
     }
 }

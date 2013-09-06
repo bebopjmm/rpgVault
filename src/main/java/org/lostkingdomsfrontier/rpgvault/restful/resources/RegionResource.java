@@ -50,6 +50,7 @@ public class RegionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JacksonViews.RestfulView.class)
     public Region getRegion() {
+        LOG.info("-- getRegion:" + region.getSlug());
         this.region.setComplexIndex(mapComplexes());
         return this.region;
     }

@@ -56,8 +56,7 @@ public final class MongoServiceTest {
             Complex sampleComplex = new Complex();
             sampleComplex.setName("Catacombs of Wrath");
             sampleComplex.setSlug("catacombs-of-wrath");
-            WriteResult<Complex, String> result = settingDelegate.addComplex(sampleComplex);
-            LOG.info("sampleComplex id = " + result.getSavedId());
+            settingDelegate.addComplex(sampleComplex);
 
             Area area = new Area();
             area.setSlug("b1.1");

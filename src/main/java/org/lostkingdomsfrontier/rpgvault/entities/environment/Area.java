@@ -30,7 +30,7 @@ public class Area {
     /**
      * The list of entrances that connect this area to others.
      */
-    List<Entrance> entrances = new ArrayList<>();
+    List<String> entrances = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -64,11 +64,11 @@ public class Area {
         this.details = details;
     }
 
-    public List<Entrance> getEntrances() {
+    public List<String> getEntrances() {
         return entrances;
     }
 
-    public void setEntrances(List<Entrance> entrances) {
+    public void setEntrances(List<String> entrances) {
         this.entrances = entrances;
     }
 

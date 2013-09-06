@@ -52,6 +52,7 @@ public class SettingResource {
         if (region != null) {
             resource.setRegion(region);
             resource.setDelegate(this.delegate);
+            LOG.info("-- regionResource instantiated for: " + slug);
             return resource;
         } else {
             throw new WebApplicationException(404);

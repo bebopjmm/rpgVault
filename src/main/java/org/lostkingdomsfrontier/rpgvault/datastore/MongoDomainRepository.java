@@ -132,7 +132,6 @@ public class MongoDomainRepository {
      * for its slug attribute or a RepositoryException will be thrown.
      *
      * @param setting the new Setting to insert into the repository
-     * @return the WriteResult of the insert
      */
     public void addSetting(Setting setting) {
         // Verify there isn't an existing setting with same slug
@@ -148,6 +147,11 @@ public class MongoDomainRepository {
         this.settingColl.getDbCollection().getCollection(setting.getSlug());
     }
 
+    /**
+     * This method attempts to retrieve the Setting with the provided slug.
+     * @param slug String slug value on which to query
+     * @return Setting matching the slug parameter, null if not found.
+     */
     public Setting findSetting(String slug) {
         DBCursor<Setting> cursor = this.settingColl.find().is("slug", slug);
         LOG.info("-- Attempt to findSetting [" + slug + "] yielded results size = " + cursor.count());

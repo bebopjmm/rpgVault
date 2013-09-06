@@ -3,10 +3,7 @@ package org.lostkingdomsfrontier.rpgvault.datastore;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import org.lostkingdomsfrontier.rpgvault.entities.JacksonViews;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Area;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Complex;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Region;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Setting;
+import org.lostkingdomsfrontier.rpgvault.entities.environment.*;
 import org.mongojack.*;
 
 import java.util.List;
@@ -101,6 +98,9 @@ public class SettingRepositoryDelegate {
             throw repositoryException;
         }
 
+        // Ensure the region.settingSlug value is correct
+        region.setSettingID(this.setting.getSlug());
+
         // Insert the Region and add its id to setting's regionIDs
         WriteResult<Region, String> result = regionCollection.insert(region);
 
@@ -129,7 +129,9 @@ public class SettingRepositoryDelegate {
     }
 
     public List<Complex> getComplexesInRegion(Region region) {
-        return this.complexCollection.find().in("_id", region.getComplexIDs()).toArray();
+        List<Complex> results = this.complexCollection.find().in("slug", region.getComplexIDs()).toArray();
+        LOG.info("-- total complexes in region: " + region.getSlug() + " = " + results.size());
+        return results;
     }
 
     public Complex findComplex(String complexSlug) {
@@ -153,7 +155,7 @@ public class SettingRepositoryDelegate {
         return cursor.count() == 0;
     }
 
-    public WriteResult<Complex, String> addComplex(Complex complex) {
+    public void addComplex(Complex complex) {
         // Verify there isn't an existing complex with same slug within the setting
         if (!isSlugAvailable(complex)) {
             RepositoryException repositoryException =
@@ -166,22 +168,22 @@ public class SettingRepositoryDelegate {
         // Insert the Complex and add its id to setting's regionIDs
         WriteResult<Complex, String> result = this.complexCollection.insert(complex);
 
-        // TODO include the Complex slug value in its Region
-//        this.rootCollection.updateById(setting.get_id(), DBUpdate.push("regionIDs", result.getSavedId()));
-        return result;
+        // Include the Complex slug value in its Region
+        this.regionCollection.update(DBQuery.is("slug", complex.getRegionSlug()),
+                                     DBUpdate.addToSet("complexIDs", complex.getSlug()));
     }
 
-    public WriteResult<Complex, String> replaceComplex(Complex complex) {
+    public void replaceComplex(Complex complex) {
         Complex origComplex = findComplex(complex.getSlug());
         if (origComplex != null) {
             complex.set_id(origComplex.get_id());
-            return this.complexCollection.updateById(origComplex.get_id(), complex);
+            this.complexCollection.save(complex);
         } else {
-            return addComplex(complex);
+            addComplex(complex);
         }
     }
 
-    public WriteResult<Complex, String> addAreaToComplex(Area area, String complexSlug) {
+    public void addAreaToComplex(Area area, String complexSlug) {
         Complex origComplex = findComplex(complexSlug);
         if (origComplex == null) {
             RepositoryException repositoryException =
@@ -192,7 +194,24 @@ public class SettingRepositoryDelegate {
         }
 
         // TODO Make sure this area's slug is unique to the complex
-        return this.complexCollection.updateById(origComplex.get_id(), DBUpdate.addToSet("areas", area));
+        this.complexCollection.updateById(origComplex.get_id(), DBUpdate.addToSet("areas", area));
     }
 
+    public void addEntranceToComplex(Entrance entrance, String complexSlug) {
+        Complex origComplex = findComplex(complexSlug);
+        if (origComplex == null) {
+            RepositoryException repositoryException =
+                    new RepositoryException(
+                            "Attempt to add Area to complex NOT in repository, complexSlug = " + complexSlug);
+            LOG.throwing(this.getClass().getName(), "addEntranceToComplex", repositoryException);
+            throw repositoryException;
+        }
+
+        for (String areaSlug : entrance.getAreas()) {
+            Area area = origComplex.getArea(areaSlug);
+            area.getEntrances().add(entrance.getSlug());
+        }
+        origComplex.getEntrances().add(entrance);
+        this.complexCollection.save(origComplex);
+    }
 }

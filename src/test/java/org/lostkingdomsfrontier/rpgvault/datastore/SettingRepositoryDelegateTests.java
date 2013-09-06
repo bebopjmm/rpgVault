@@ -4,10 +4,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Area;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Complex;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Region;
-import org.lostkingdomsfrontier.rpgvault.entities.environment.Setting;
+import org.lostkingdomsfrontier.rpgvault.entities.environment.*;
 import org.mongojack.WriteResult;
 
 import java.util.logging.Logger;
@@ -67,9 +64,8 @@ public class SettingRepositoryDelegateTests {
         assertNull(settingDelegate.findComplex("catacombs-of-wrath"));
 
         Complex testComplex = SettingRepositoryDelegateTests.createTestComplex();
-        WriteResult<Complex, String> result = settingDelegate.addComplex(testComplex);
-        LOG.info("-- Added new complex: " + testComplex.getName() + "[" + result.getSavedId() + "]");
-        assertTrue(!result.getSavedId().isEmpty());
+        settingDelegate.addComplex(testComplex);
+        LOG.info("-- Added new complex: " + testComplex.getName());
         assertTrue(settingDelegate.getRegions().size() == 1);
         assertFalse(settingDelegate.isSlugAvailable(testComplex));
 
@@ -89,7 +85,16 @@ public class SettingRepositoryDelegateTests {
         Area newArea = SettingRepositoryDelegateTests.createArea1();
         settingDelegate.addAreaToComplex(newArea, testComplex.getSlug());
         testComplex = settingDelegate.findComplex("catacombs-of-wrath");
-        assertEquals(newArea, testComplex.getAreas().get(0));
+        assertTrue(testComplex.getAreas().size() ==1);
+        assertNotNull(testComplex.getArea(newArea.getSlug()));
+
+        // Verify adding the same area again does not impact Complex
+        settingDelegate.addAreaToComplex(newArea, testComplex.getSlug());
+        assertTrue(testComplex.getAreas().size() ==1);
+
+        // Verify adding an area with same content does not impact Complex
+        settingDelegate.addAreaToComplex(SettingRepositoryDelegateTests.createArea1(), testComplex.getSlug());
+        assertTrue(testComplex.getAreas().size() ==1);
     }
 
     @Test
@@ -105,7 +110,27 @@ public class SettingRepositoryDelegateTests {
 
         testComplex = settingDelegate.findComplex(testComplex.getSlug());
         assertTrue(testComplex.getAreas().size() == 2);
-        assertEquals(newArea, testComplex.getAreas().get(1));
+        assertNotNull(testComplex.getArea(newArea.getSlug()));
+    }
+
+    @Test
+    public void testAddEntrance() {
+        SettingRepositoryDelegate settingDelegate = repository.getDelegateForSetting("golarion");
+        Complex testComplex = settingDelegate.findComplex("catacombs-of-wrath");
+        assertNotNull(testComplex);
+        assertTrue(testComplex.getEntrances().size() == 0);
+        assertTrue(testComplex.getAreas().size() == 2);
+
+        Entrance entrance = SettingRepositoryDelegateTests.createEntranceA1toA2();
+        settingDelegate.addEntranceToComplex(entrance, testComplex.getSlug());
+        testComplex = settingDelegate.findComplex("catacombs-of-wrath");
+        assertTrue(testComplex.getEntrances().size() == 1);
+
+        Area area = testComplex.getArea(entrance.getAreas()[0]);
+        assertTrue(area.getEntrances().contains(entrance.getSlug()));
+
+        area = testComplex.getArea(entrance.getAreas()[1]);
+        assertTrue(area.getEntrances().contains(entrance.getSlug()));
     }
 
     static Region createTestRegion() {
@@ -128,6 +153,7 @@ public class SettingRepositoryDelegateTests {
         Complex complex = new Complex();
         complex.setName("Catacombs of Wrath");
         complex.setSlug("catacombs-of-wrath");
+        complex.setRegionSlug("sandpoint");
         return complex;
     }
 
@@ -155,5 +181,14 @@ public class SettingRepositoryDelegateTests {
                                 " urns and other pottery containers that once held food stores, long since" +
                                 " crumbled to dust.");
         return area;
+    }
+
+    static Entrance createEntranceA1toA2() {
+        Entrance entrance = new Entrance();
+        entrance.setSlug("b1.1-b1.2");
+        entrance.setName("opening");
+        entrance.setDescription("a simple opening");
+        entrance.connectAreas(createArea1(), createArea2());
+        return entrance;
     }
 }
