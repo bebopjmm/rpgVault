@@ -188,7 +188,7 @@ public class SettingRepositoryDelegateTests {
         entrance.setSlug("b1.1-b1.2");
         entrance.setName("opening");
         entrance.setDescription("a simple opening");
-        entrance.connectAreas(createArea1(), createArea2());
+        entrance.connectAreas(createArea1().getSlug(), createArea2().getSlug());
         return entrance;
     }
 }

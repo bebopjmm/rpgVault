@@ -48,8 +48,8 @@ public class Entrance {
         return areas;
     }
 
-    public void connectAreas(Area area1, Area area2) {
-        this.areas[0] = area1.getSlug();
-        this.areas[1] = area2.getSlug();
+    public void connectAreas(String areaSlug1, String area2Slug) {
+        this.areas[0] = areaSlug1;
+        this.areas[1] = area2Slug;
     }
 }
