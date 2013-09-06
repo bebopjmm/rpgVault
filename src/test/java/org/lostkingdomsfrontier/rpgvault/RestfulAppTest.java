@@ -1,6 +1,7 @@
 package org.lostkingdomsfrontier.rpgvault;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -32,7 +33,7 @@ public class RestfulAppTest {
         LOG.info("rpgVault RestfulAppTest READY for external connections against: [" + baseURI + "]");
         System.in.read();
         LOG.info("++ Stopping grizzly ...");
-        server.stop();
+        server.shutdownNow();
     }
 
 }

@@ -45,8 +45,8 @@ public enum RepositoryDao {
         } else {
             LOG.info("-- Connected to repository at [" + host + ":" + port + "]");
             isConnected = true;
-            repository.setSettingDB(ConfigDao.CONFIG.getConfig().getString("repository.settingsDB", "rpg_environments"));
-            repository.setCampaignDB(ConfigDao.CONFIG.getConfig().getString("repository.campaignsDB", "rpg_campaigns"));
+            repository.setSettingDB(ConfigDao.CONFIG.getConfig().getString("repository.settingsDB", "rpg_environments"), false);
+            repository.setCampaignDB(ConfigDao.CONFIG.getConfig().getString("repository.campaignsDB", "rpg_campaigns"), false);
         }
     }
 

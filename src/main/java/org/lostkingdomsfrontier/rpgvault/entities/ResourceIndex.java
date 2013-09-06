@@ -2,8 +2,7 @@ package org.lostkingdomsfrontier.rpgvault.entities;
 
 /**
  *
- * @author John McCormick
- *         Date: 8/10/13
+ * @author John McCormick Date: 8/10/13
  */
 public class ResourceIndex {
     private String id;

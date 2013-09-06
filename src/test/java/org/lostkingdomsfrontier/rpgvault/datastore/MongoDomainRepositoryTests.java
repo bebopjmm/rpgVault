@@ -3,6 +3,7 @@ package org.lostkingdomsfrontier.rpgvault.datastore;
 import static org.junit.Assert.*;
 
 import org.apache.commons.configuration.XMLConfiguration;
+import org.bson.types.ObjectId;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,9 +52,8 @@ public class MongoDomainRepositoryTests {
         sampleSetting.setDescription("The default Pathfinder Campaign Setting");
         assertTrue(repository.isSlugAvailable(sampleSetting));
 
-        WriteResult<Setting, String> result = repository.addSetting(sampleSetting);
-        LOG.info("-- Added new setting: " + sampleSetting.getName() + "[" + result.getSavedId() + "]");
-        assertTrue(!result.getSavedId().isEmpty());
+        repository.addSetting(sampleSetting);
+        LOG.info("-- Added new setting: " + sampleSetting.getName());
         assertTrue(repository.getSettings().size() == 1);
         assertFalse(repository.isSlugAvailable(sampleSetting));
 

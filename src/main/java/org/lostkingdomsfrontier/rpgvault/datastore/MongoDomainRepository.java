@@ -134,7 +134,7 @@ public class MongoDomainRepository {
      * @param setting the new Setting to insert into the repository
      * @return the WriteResult of the insert
      */
-    public WriteResult<Setting, String> addSetting(Setting setting) {
+    public void addSetting(Setting setting) {
         // Verify there isn't an existing setting with same slug
         if (!isSlugAvailable(setting)) {
             RepositoryException repositoryException =
@@ -144,9 +144,8 @@ public class MongoDomainRepository {
             throw repositoryException;
         }
         // Insert the new setting and create a sub-collection for its content
-        WriteResult<Setting, String> result = this.settingColl.insert(setting);
+        this.settingColl.insert(setting);
         this.settingColl.getDbCollection().getCollection(setting.getSlug());
-        return result;
     }
 
     public Setting findSetting(String slug) {

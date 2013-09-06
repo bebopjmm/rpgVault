@@ -33,8 +33,7 @@ public class SettingRepositoryDelegateTests {
         repository.setSettingDB(config.getString("repository.settingsDB", "rpg_settingsTest"), true);
         assertTrue(repository.getSettings().isEmpty());
 
-        WriteResult<Setting, String> result = repository.addSetting(createTestSetting());
-        assertTrue(!result.getSavedId().isEmpty());
+        repository.addSetting(createTestSetting());
         assertTrue(repository.getSettings().size() == 1);
     }
 
@@ -49,9 +48,8 @@ public class SettingRepositoryDelegateTests {
         assertNull(settingDelegate.findRegion("sandpoint"));
 
         Region testRegion = SettingRepositoryDelegateTests.createTestRegion();
-        WriteResult<Region, String> result = settingDelegate.addRegion(testRegion);
-        LOG.info("-- Added new region: " + testRegion.getName() + "[" + result.getSavedId() + "]");
-        assertTrue(!result.getSavedId().isEmpty());
+        settingDelegate.addRegion(testRegion);
+        LOG.info("-- Added new region: " + testRegion.getName());
         assertTrue(settingDelegate.getRegions().size() == 1);
         assertFalse(settingDelegate.isSlugAvailable(testRegion));
 

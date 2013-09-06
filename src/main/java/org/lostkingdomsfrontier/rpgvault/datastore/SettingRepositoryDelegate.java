@@ -7,10 +7,7 @@ import org.lostkingdomsfrontier.rpgvault.entities.environment.Area;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Complex;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Region;
 import org.lostkingdomsfrontier.rpgvault.entities.environment.Setting;
-import org.mongojack.DBCursor;
-import org.mongojack.DBUpdate;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.mongojack.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,6 +20,7 @@ public class SettingRepositoryDelegate {
     final DBCollection settingCollection;
     JacksonDBCollection<Setting, String> rootCollection;
     Setting setting;
+    BasicDBObject settingSearch;
     JacksonDBCollection<Region, String> regionCollection;
     JacksonDBCollection<Complex, String> complexCollection;
 
@@ -31,6 +29,7 @@ public class SettingRepositoryDelegate {
         this.settingCollection = settingCollection;
         this.rootCollection = rootCollection;
         this.setting = setting;
+        this.settingSearch = new BasicDBObject().append("slug", this.setting.getSlug());
         this.regionCollection = JacksonDBCollection.wrap(this.settingCollection.getCollection("regions"),
                                                          Region.class, String.class, JacksonViews.MongoView.class);
         this.regionCollection.createIndex(new BasicDBObject("slug", 1));
@@ -75,6 +74,7 @@ public class SettingRepositoryDelegate {
 
     /**
      * This method returns the Region object within the delegate's Setting with the provided slug.
+     *
      * @param regionSlug slug value to search against
      * @return the Region object matching the slug value or null if no match within this Setting.
      */
@@ -90,9 +90,8 @@ public class SettingRepositoryDelegate {
      * for its slug attribute or a RepositoryException will be thrown.
      *
      * @param region Region object to add to this delegate's Setting
-     * @return  WriteResult of the insertion operation
      */
-    public WriteResult<Region, String> addRegion(Region region) {
+    public void addRegion(Region region) {
         // Verify there isn't an existing region with same slug within the setting
         if (!isSlugAvailable(region)) {
             RepositoryException repositoryException =
@@ -105,12 +104,13 @@ public class SettingRepositoryDelegate {
         // Insert the Region and add its id to setting's regionIDs
         WriteResult<Region, String> result = regionCollection.insert(region);
 
-        this.rootCollection.updateById(setting.get_id(), DBUpdate.push("regionIDs", result.getSavedId()));
-        return result;
+        this.rootCollection.update(DBQuery.is("slug", this.setting.getSlug()),
+                                   DBUpdate.push("regionIDs", region.getSlug()));
     }
 
     /**
      * This method returns a List of all the Complex instances currently associated with this delegate's Setting.
+     *
      * @return List of Complex objects
      */
     public List<Complex> getComplexes() {
@@ -120,6 +120,7 @@ public class SettingRepositoryDelegate {
     /**
      * This method return the List of all Complex objects currently associated with this delegate's Setting that match
      * the provided slugFilter values.
+     *
      * @param slugFilter List of slug values to filter the returned results
      * @return List of Complex objects matching the filter values
      */

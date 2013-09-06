@@ -38,9 +38,8 @@ public final class MongoServiceTest {
             sampleSetting.setName("Golarion");
             sampleSetting.setSlug("golarion");
             sampleSetting.setDescription("The default Pathfinder Campaign Setting");
-            WriteResult<Setting, String> result = repository.addSetting(sampleSetting);
-            sampleSetting.set_id(result.getSavedId());
-            LOG.info("-- Added new setting: " + sampleSetting.getName() + "[" + result.getSavedId() + "]");
+            repository.addSetting(sampleSetting);
+            LOG.info("-- Added new setting: " + sampleSetting.getName());
         }
         SettingRepositoryDelegate settingDelegate = repository.getDelegateForSetting("golarion");
 
@@ -49,7 +48,7 @@ public final class MongoServiceTest {
             sampleRegion.setName("Sandpoint");
             sampleRegion.setSlug("sandpoint");
             sampleRegion.setDescription("A small coastal town on the Lost Coast of Varisia");
-            WriteResult<Region, String> regionResult = settingDelegate.addRegion(sampleRegion);
+            settingDelegate.addRegion(sampleRegion);
             LOG.info("-- Added new region: " + sampleRegion.getName() + " to setting: " + sampleSetting.getName());
         }
 

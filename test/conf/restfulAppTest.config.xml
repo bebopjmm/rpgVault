@@ -4,7 +4,7 @@
     <repository>
         <host>hogwarts.home</host>
         <port>27017</port>
-        <settingsDB>rpg_settings</settingsDB>
-        <campaignsDB>rpg_campaigns</campaignsDB>
+        <settingsDB>rpg_settingsTest</settingsDB>
+        <campaignsDB>rpg_campaignsTest</campaignsDB>
     </repository>
 </rpgVaultRestful-configuration>

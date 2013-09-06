@@ -15,6 +15,7 @@ import java.util.List;
  * Date: 8/12/13 Time: 09:17
  */
 public class Setting {
+    @JsonView(JacksonViews.MongoView.class)
     private String _id;
 
     String name;
